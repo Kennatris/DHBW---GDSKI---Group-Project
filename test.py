@@ -1,5 +1,8 @@
 from PIL import Image
 
+import numpy as np
+import matplotlib.pyplot as mpl
+
 def load_image(file_path):
     try:
         img = Image.open(file_path)
@@ -21,7 +24,7 @@ def get_stuff_from_image(img):
     for j in range(height):  # Rows
         for i in range(width):  # Columns
             pixel[j][i] = img.getpixel((i, j))
-            print(f"Pixel[{j}][{i}]: {pixel[j][i]}")
+            #print(f"Pixel[{j}][{i}]: {pixel[j][i]}")
 
     print("Image processing completed.")
 
@@ -29,3 +32,4 @@ if __name__ == "__main__":
     image_path = "test_img_1.png"  # Path to image
     image = load_image(image_path)
     get_stuff_from_image(image)
+
