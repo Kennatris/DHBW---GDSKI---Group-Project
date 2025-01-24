@@ -29,7 +29,11 @@ def make_matrix(pixel_matrix, img):
         print("No image to process.")
         return None
 
-    kernel = np.array([[0, 2], [-2, 1]])  # Beispielkernel
+    # Kernel, der horizontale Kanten hervorhebt
+    kernel = np.array([[-3, -3, -3],
+                       [6, 6, 6],
+                       [-3, -3, -3]])
+
     result = convolve2d(pixel_matrix, kernel, mode='valid')
 
     print(f"Convolved Matrix: \n{result}")
@@ -40,18 +44,41 @@ def make_matrix(pixel_matrix, img):
     return result_normalized
 
 
-def create_image(norm_conv_matrix):
+def max_pooling(matrix, pool_size=2, stride=2):
+    """
+    Max-Pooling-Operation auf die Eingabematrix anwenden.
+    :param matrix: Eingabematrix (Feature-Map)
+    :param pool_size: Größe des Pooling-Fensters (z.B. 2x2)
+    :param stride: Schrittweite des Poolings (meistens 2)
+    :return: Poolierte Matrix
+    """
+
+    # Berechne die Größe der gepoolten Matrix
+    pooled_height = (matrix.shape[0] - pool_size) // stride + 1
+    pooled_width = (matrix.shape[1] - pool_size) // stride + 1
+    pooled_matrix = np.zeros((pooled_height, pooled_width))
+
+    # Max-Pooling durchführen
+    for i in range(pooled_height):
+        for j in range(pooled_width):
+            # Finde den Bereich des Pooling-Fensters
+            start_i = i * stride
+            start_j = j * stride
+            window = matrix[start_i:start_i + pool_size, start_j:start_j + pool_size]
+            # Finde das Maximum im Fenster
+            pooled_matrix[i, j] = np.max(window)
+
+    return pooled_matrix
+
+
+def create_image(norm_conv_matrix, name):
     result_image = Image.fromarray(norm_conv_matrix.astype(np.uint8))
 
     # Bild anzeigen
     plt.imshow(result_image, cmap="gray")
-    plt.title("Convolved Image")
+    plt.title(name)
     plt.axis("off")
     plt.show()
-
-    # Bild speichern
-    result_image.save("convolved_image.png")
-    print("Convolved image saved as 'convolved_image.png'")
 
 
 if __name__ == "__main__":
@@ -59,4 +86,6 @@ if __name__ == "__main__":
     image = load_image(image_path)
     pixel_m = get_stuff_from_image(image)
     norm_conv_matrix = make_matrix(pixel_m, image)
-    create_image(norm_conv_matrix)
+    create_image(norm_conv_matrix, "Convolved Image")
+    pooled_matrix = max_pooling(norm_conv_matrix, 2, 2)
+    create_image(pooled_matrix, "Pooled Image")
