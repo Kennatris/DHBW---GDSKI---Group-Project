@@ -29,7 +29,7 @@ def get_stuff_from_image(img):
     print("Image processing completed.")
     return np.matrix(pixel)
 
-def make_matrix(something, img):
+def make_matrix(pixel_matrix, img):
         if img is None:
             print("No image to process.")
             return
@@ -57,5 +57,5 @@ def make_matrix(something, img):
 if __name__ == "__main__":
     image_path = "test_img_1.png"  # Path to image
     image = load_image(image_path)
-    test = get_stuff_from_image(image)
-    make_matrix(test, image)
+    pixel_m = get_stuff_from_image(image)
+    make_matrix(pixel_m, image)
