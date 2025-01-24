@@ -106,9 +106,9 @@ if __name__ == "__main__":
 
     plot_image(pixel_m.copy(), f"Pixel Matrix {image_path}")
 
-    # kernel = np.array([[-1, 2, -1],[-1, 2, -1],[-1, 2, -1]])  # Kernel vertikal
+    kernel = np.array([[-1, 2, -1],[-1, 2, -1],[-1, 2, -1]])  # Kernel vertikal
     # kernel = np.array([[2, 2, 2],[-4, -4, -4],[2, 2, 2]])  # Kernel horizontal
-    kernel = np.array([[1, 2, 1],[1, 2, 1],[1, 2, 1]])  # sharpening
+    # kernel = np.array([[1, 2, 1],[1, 2, 1],[1, 2, 1]])  # sharpening
 
 
     layer_count = 2  # Anzahl der Layer
