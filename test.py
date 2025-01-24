@@ -1,7 +1,8 @@
-from PIL import Image
-
+import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.pyplot as mpl
+from PIL import Image
+from scipy.signal import convolve2d
+
 
 def load_image(file_path):
     try:
@@ -12,50 +13,50 @@ def load_image(file_path):
         print(f"Error loading image: {e}")
         return None
 
+
 def get_stuff_from_image(img):
     if img is None:
         print("No image to process.")
         return
 
-    width, height = img.size
-    pixel = np.matrix(np.ones((height, width)))
-    print(f"Width: {width}, Height: {height}")
+    img_array = np.asarray(img.convert("L"))  # Graustufenbild für einfachere Verarbeitung
+    print(f"Processed Image Shape: {img_array.shape}")
+    return img_array
 
-    for j in range(height):  # Rows
-        for i in range(width):  # Columns
-             pixel[j,i] = int(sum(img.getpixel((i, j))))
-            #print(f"Pixel[{j}][{i}]: {pixel[j][i]}")
-    print(f"Pixels: {pixel}")
-    print("Image processing completed.")
-    return np.matrix(pixel)
 
 def make_matrix(pixel_matrix, img):
-        if img is None:
-            print("No image to process.")
-            return
+    if img is None or pixel_matrix is None:
+        print("No image to process.")
+        return None
 
-        width, height = img.size
-        kernel = np.matrix([[0,2],[-2,1]])
+    kernel = np.array([[0, 2], [-2, 1]])  # Beispielkernel
+    result = convolve2d(pixel_matrix, kernel, mode='valid')
 
-        if width % 2 == 0: # dient der anschaulichkeit
-            width = width
-        elif width % 2 != 0:
-            width = width - 1
+    print(f"Convolved Matrix: \n{result}")
 
-        if height % 2 == 0: # dient der anschaulichkeit
-            height = height
-        elif height % 2 != 0:
-            height = height - 1
+    # Normierung der Werte auf 0-255 für Bilddarstellung
+    result_normalized = (result - result.min()) / (result.max() - result.min()) * 255
 
-        res = np.matrix(np.ones((int(height/2), int(width/2))))
+    return result_normalized
 
-        #############################################################
-        ##           Hier muss der Kernel über die Matrix.          ##
-        #############################################################
 
-        print(f"res: {res}")
+def create_image(norm_conv_matrix):
+    result_image = Image.fromarray(norm_conv_matrix.astype(np.uint8))
+
+    # Bild anzeigen
+    plt.imshow(result_image, cmap="gray")
+    plt.title("Convolved Image")
+    plt.axis("off")
+    plt.show()
+
+    # Bild speichern
+    result_image.save("convolved_image.png")
+    print("Convolved image saved as 'convolved_image.png'")
+
+
 if __name__ == "__main__":
     image_path = "test_img_1.png"  # Path to image
     image = load_image(image_path)
     pixel_m = get_stuff_from_image(image)
-    make_matrix(pixel_m, image)
+    norm_conv_matrix = make_matrix(pixel_m, image)
+    create_image(norm_conv_matrix)
