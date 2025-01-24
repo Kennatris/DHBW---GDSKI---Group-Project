@@ -42,7 +42,7 @@ def make_matrix(pixel_matrix, img):
         elif width % 2 != 0:
             width = width - 1
 
-        if height % 2 == 0:
+        if height % 2 == 0: # dient der anschaulichkeit
             height = height
         elif height % 2 != 0:
             height = height - 1
@@ -50,7 +50,7 @@ def make_matrix(pixel_matrix, img):
         res = np.matrix(np.ones((int(height/2), int(width/2))))
 
         #############################################################
-        ##           Hier muss der Kernel über something.          ##
+        ##           Hier muss der Kernel über die Matrix.          ##
         #############################################################
 
         print(f"res: {res}")
